@@ -1,3 +1,5 @@
+package pro.elevateme;
+
 import model.UserSummary;
 import service.TransactionService;
 
