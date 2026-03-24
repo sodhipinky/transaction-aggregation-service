@@ -1,14 +1,35 @@
 # Transaction Aggregation Service
 
+## 🌍 Story / Context
+
+You are working as a backend engineer at a fintech company similar to Wise.
+
+Every second, your system receives thousands of transactions from different payment providers across the world. These
+transactions are used to power dashboards, analytics, and customer insights.
+
+However, the data coming from external providers is:
+
+- Unstructured
+- Noisy
+- Not optimized for your internal systems
+
+Your job is to build a service that:
+
+- Cleans this data
+- Aggregates it
+- Makes it fast and usable for internal systems
+
+---
+
 ## 🎯 Objective
 
-Build a backend service that processes transaction data from an external provider and prepares it for internal use.
+Build a backend service that processes transaction data and generates a **user-level summary**.
 
 ---
 
 ## 📥 Input (External Data)
 
-You will receive a list of transactions from a third-party provider.
+You receive transactions from an external provider.
 
 Each transaction contains:
 
@@ -23,50 +44,66 @@ Example:
 [
 { id: "t1", userId: "u1", amount: 100, currency: "USD", timestamp: 1700000000 },
 { id: "t2", userId: "u1", amount: 200, currency: "USD", timestamp: 1700000100 },
-{ id: "t3", userId: "u2", amount: 300, currency: "EUR", timestamp: 1700000200 }
+{ id: "t3", userId: "u2", amount: 300, currency: "EUR", timestamp: 1699990000 }
 ]
+
+---
+
+## 🚧 Problem You Are Solving
+
+The business wants to display a **real-time dashboard** showing:
+
+👉 Total money transacted per user  
+👉 Number of transactions per user
+
+BUT:
+
+- Only **recent transactions (last 1 hour)** should be considered
+- The system must be **fast and scalable**
 
 ---
 
 ## 🎯 Requirements
 
-Implement a method:
+Implement:
 
 getUserTransactionSummary()
 
-This method should:
+---
 
-### 1. Convert External Model → Internal Model
+### ✅ 1. Convert External → Internal Model
 
-Rename fields and structure appropriately.
+Clean the data and convert it into a format your system understands.
 
 ---
 
-### 2. Aggregate Transactions Per User
+### ✅ 2. Filter Recent Transactions
+
+Only include transactions from the **last 1 hour**
+
+---
+
+### ✅ 3. Aggregate Per User
 
 For each user:
-
 - Calculate total transaction amount
 - Count number of transactions
 
 ---
 
-### 3. Filter Recent Transactions
+### ✅ 4. Add Caching
 
-Only include transactions from the last 1 hour.
+To improve performance:
 
----
-
-### 4. Add Caching
-
-- Cache the computed summary for 60 seconds
-- If cache is valid, return cached result
+- Cache the computed result for **60 seconds**
+- If cache is valid → return cached result
+- Avoid calling external provider repeatedly
 
 ---
 
 ## 📤 Output
 
-Return a list of user summaries:
+Return:
 
 - userId
 - totalAmount
@@ -81,18 +118,23 @@ Example:
 
 ---
 
-## 🧠 Key Concepts Being Tested
+## 🧠 What You Should Think About
 
-- Data aggregation
-- HashMap usage
-- Time filtering
-- Caching
-- Clean service design
+- How to efficiently group transactions?
+- How to filter by time?
+- How to avoid repeated expensive computations?
+- How will this behave if traffic increases?
 
 ---
 
-## 🔥 Follow-Up Scenarios (Think About These)
+## 🔥 Real-World Considerations
 
-- What if transactions are very large in volume?
-- How would you handle real-time streaming data?
-- How would you scale this across multiple instances?
+- What if millions of transactions come in?
+- What if data comes in real-time (streaming)?
+- What if multiple servers are running this service?
+
+---
+
+## 🏁 Goal
+
+Think like a backend engineer building a **scalable, production-ready service**, not just solving a coding problem.
